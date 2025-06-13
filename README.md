@@ -25,8 +25,8 @@
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/yourusername/invoice.git
-cd invoice
+git clone https://github.com/peter29ljf/invoiceapi.git
+cd invoiceapi
 ```
 
 2. 创建虚拟环境
