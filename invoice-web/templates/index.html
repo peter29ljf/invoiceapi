@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-receipt"></i> Invoice Management
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-view="dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-view="invoices">Invoices</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-view="customers">Customers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-view="api">API</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-view="settings">Settings</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view">
+            <h2>Dashboard</h2>
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Invoices</h5>
+                            <h2 class="card-text" id="total-invoices">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Paid</h5>
+                            <h2 class="card-text" id="paid-invoices">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">Pending</h5>
+                            <h2 class="card-text" id="pending-invoices">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger">
+                        <div class="card-body">
+                            <h5 class="card-title">Overdue</h5>
+                            <h2 class="card-text" id="overdue-invoices">0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Recent Invoices</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="recent-invoices-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoices View -->
+        <div id="invoices-view" class="view" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Invoices</h2>
+                <div>
+                    <button class="btn btn-outline-success me-2" onclick="exportInvoicesCSV()">
+                        <i class="bi bi-download"></i> Export CSV
+                    </button>
+                    <button class="btn btn-primary" onclick="showNewInvoiceModal()">
+                        <i class="bi bi-plus-circle"></i> New Invoice
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Due Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoices-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customers View -->
+        <div id="customers-view" class="view" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Customers</h2>
+                <button class="btn btn-primary" onclick="showNewCustomerModal()">
+                    <i class="bi bi-person-plus"></i> New Customer
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API View -->
+        <div id="api-view" class="view" style="display: none;">
+            <h2>API Documentation</h2>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Webhook Endpoint</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Send invoice data from external systems using our webhook endpoint:</p>
+                            <code class="d-block p-2 bg-light">POST /api/webhook/invoice</code>
+                            
+                            <h6 class="mt-3">Sample Request:</h6>
+                            <pre class="bg-light p-3"><code id="webhook-sample"></code></pre>
+                            
+                            <h6 class="mt-3">cURL Example:</h6>
+                            <pre class="bg-light p-3"><code>curl -X POST http://localhost:5000/api/webhook/invoice \
+  -H "Content-Type: application/json" \
+  -d @samples/webhook_sample.json</code></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h5>API Endpoints</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Method</th>
+                                        <th>Endpoint</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><span class="badge bg-success">GET</span></td>
+                                        <td>/api/customers</td>
+                                        <td>List all customers</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary">POST</span></td>
+                                        <td>/api/customers</td>
+                                        <td>Create new customer</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-success">GET</span></td>
+                                        <td>/api/invoices</td>
+                                        <td>List all invoices</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary">POST</span></td>
+                                        <td>/api/invoices</td>
+                                        <td>Create new invoice</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-success">GET</span></td>
+                                        <td>/api/invoices/{id}</td>
+                                        <td>Get invoice details</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-warning">PUT</span></td>
+                                        <td>/api/invoices/{id}</td>
+                                        <td>Update invoice</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-danger">DELETE</span></td>
+                                        <td>/api/invoices/{id}</td>
+                                        <td>Delete invoice</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-success">GET</span></td>
+                                        <td>/api/invoices/{id}/pdf</td>
+                                        <td>Download invoice PDF</td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="badge bg-primary">POST</span></td>
+                                        <td>/api/webhook/invoice</td>
+                                        <td>Create invoice via webhook</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view" style="display: none;">
+            <h2>Company Settings</h2>
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-building"></i> Company Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="companySettingsForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Company Name *</label>
+                                            <input type="text" class="form-control" name="company_name" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Phone *</label>
+                                            <input type="text" class="form-control" name="phone" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label class="form-label">Address *</label>
+                                            <input type="text" class="form-control" name="address" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">City & Postal Code *</label>
+                                            <input type="text" class="form-control" name="city_postal" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Email *</label>
+                                            <input type="email" class="form-control" name="email" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">GST Number *</label>
+                                            <input type="text" class="form-control" name="gst_number" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-secondary me-2" onclick="loadCompanySettings()">
+                                        <i class="bi bi-arrow-clockwise"></i> Reset
+                                    </button>
+                                    <button type="button" class="btn btn-primary" onclick="saveCompanySettings()">
+                                        <i class="bi bi-check-lg"></i> Save Settings
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-eye"></i> PDF Preview</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">These settings will appear on all generated PDF invoices.</p>
+                            <div class="border rounded p-3 bg-light">
+                                <div class="text-primary fw-bold fs-6" id="preview-company-name">FANGXIN PLUMBING LTD</div>
+                                <div class="text-muted small mt-1">
+                                    <div id="preview-address">8900 DEMOREST DR.</div>
+                                    <div>P: <span id="preview-phone">(604) 388-9995</span></div>
+                                    <div>Email: <span id="preview-email">PETERLJF@GMAIL.COM</span></div>
+                                    <div id="preview-city-postal">V7A4M1</div>
+                                    <div>GST#: <span id="preview-gst">759154495RT0001</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Customer Modal -->
+    <div class="modal fade" id="newCustomerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newCustomerForm">
+                        <div class="mb-3">
+                            <label class="form-label">Name *</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" name="phone">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-control" name="address" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCustomer()">Save Customer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Invoice Modal -->
+    <div class="modal fade" id="newInvoiceModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Invoice</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newInvoiceForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Customer *</label>
+                                    <select class="form-control" name="customer_id" required>
+                                        <option value="">Select Customer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Issue Date *</label>
+                                    <input type="date" class="form-control" name="issue_date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Due Date *</label>
+                                    <input type="date" class="form-control" name="due_date" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Tax Rate (%)</label>
+                                    <input type="number" class="form-control" name="tax_rate" step="0.01" value="0">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Discount ($)</label>
+                                    <input type="number" class="form-control" name="discount" step="0.01" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6>Invoice Items</h6>
+                        <div id="invoice-items">
+                            <div class="invoice-item-row mb-2">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="Description" name="item_description[]" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="number" class="form-control" placeholder="Qty" name="item_quantity[]" step="0.01" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" class="form-control" placeholder="Unit Price" name="item_price[]" step="0.01" required>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeItem(this)">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addInvoiceItem()">
+                            <i class="bi bi-plus"></i> Add Item
+                        </button>
+                        
+                        <div class="mb-3 mt-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveInvoice()">Create Invoice</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Details Modal -->
+    <div class="modal fade" id="invoiceDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Invoice Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="invoiceDetailsContent">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" class="btn btn-primary" id="downloadPdfBtn" target="_blank">
+                        <i class="bi bi-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Invoice Modal -->
+    <div class="modal fade" id="editInvoiceModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Invoice</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editInvoiceForm">
+                        <input type="hidden" name="invoice_id">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Customer *</label>
+                                    <select class="form-control" name="customer_id" required>
+                                        <option value="">Select Customer</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-control" name="status">
+                                        <option value="pending">Pending</option>
+                                        <option value="paid">Paid</option>
+                                        <option value="overdue">Overdue</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Issue Date *</label>
+                                    <input type="date" class="form-control" name="issue_date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Due Date *</label>
+                                    <input type="date" class="form-control" name="due_date" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tax Rate (%)</label>
+                                    <input type="number" class="form-control" name="tax_rate" step="0.01" value="0">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Discount ($)</label>
+                                    <input type="number" class="form-control" name="discount" step="0.01" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h6>Invoice Items</h6>
+                        <div id="edit-invoice-items">
+                            <!-- Items will be populated here -->
+                        </div>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addEditInvoiceItem()">
+                            <i class="bi bi-plus"></i> Add Item
+                        </button>
+                        
+                        <div class="mb-3 mt-3">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updateInvoice()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+{
+  "API_ENDPOINTS": {
+    "CUSTOMERS": {
+      "LIST_CUSTOMERS": {
+        "method": "GET",
+        "url": "/api/customers",
+        "response": [
+          {
+            "id": 1,
+            "name": "John Smith",
+            "email": "john.smith@example.com",
+            "phone": "+1-555-123-4567",
+            "address": "123 Main Street\nSuite 100\nNew York, NY 10001",
+            "created_at": "2025-01-15T10:30:00"
+          },
+          {
+            "id": 2,
+            "name": "Jane Doe",
+            "email": "jane.doe@company.com",
+            "phone": "+1-555-987-6543",
+            "address": "456 Oak Avenue\nApt 2B\nLos Angeles, CA 90001",
+            "created_at": "2025-01-16T14:20:00"
+          }
+        ]
+      },
+      
+      "CREATE_CUSTOMER": {
+        "method": "POST",
+        "url": "/api/customers",
+        "request": {
+          "name": "Robert Johnson",
+          "email": "robert.j@example.com",
+          "phone": "+1-555-246-8135",
+          "address": "789 Pine Street\nFloor 3\nChicago, IL 60601"
+        },
+        "response": {
+          "id": 3,
+          "message": "Customer created successfully"
+        }
+      },
+      
+      "GET_CUSTOMER": {
+        "method": "GET",
+        "url": "/api/customers/{id}",
+        "example_url": "/api/customers/1",
+        "response": {
+          "id": 1,
+          "name": "John Smith",
+          "email": "john.smith@example.com",
+          "phone": "+1-555-123-4567",
+          "address": "123 Main Street\nSuite 100\nNew York, NY 10001",
+          "created_at": "2025-01-15T10:30:00"
+        }
+      },
+      
+      "UPDATE_CUSTOMER": {
+        "method": "PUT",
+        "url": "/api/customers/{id}",
+        "example_url": "/api/customers/1",
+        "request": {
+          "name": "John Smith Jr.",
+          "email": "john.smith.jr@example.com",
+          "phone": "+1-555-123-9999",
+          "address": "123 Main Street\nSuite 200\nNew York, NY 10001"
+        },
+        "response": {
+          "message": "Customer updated successfully"
+        }
+      },
+      
+      "DELETE_CUSTOMER": {
+        "method": "DELETE",
+        "url": "/api/customers/{id}",
+        "example_url": "/api/customers/3",
+        "response": {
+          "message": "Customer deleted successfully"
+        },
+        "error_response": {
+          "error": "Cannot delete customer with existing invoices"
+        }
+      }
+    },
+    
+    "INVOICES": {
+      "LIST_INVOICES": {
+        "method": "GET",
+        "url": "/api/invoices",
+        "response": [
+          {
+            "id": 1,
+            "invoice_number": "INV-20250115-0001",
+            "customer_name": "John Smith",
+            "issue_date": "2025-01-15",
+            "due_date": "2025-02-14",
+            "status": "pending",
+            "total": 6510.00,
+            "created_at": "2025-01-15T10:45:00"
+          },
+          {
+            "id": 2,
+            "invoice_number": "INV-20250116-0001",
+            "customer_name": "Jane Doe",
+            "issue_date": "2025-01-16",
+            "due_date": "2025-02-15",
+            "status": "paid",
+            "total": 1250.50,
+            "created_at": "2025-01-16T14:30:00"
+          }
+        ]
+      },
+      
+      "CREATE_INVOICE": {
+        "method": "POST",
+        "url": "/api/invoices",
+        "request": {
+          "customer_id": 1,
+          "issue_date": "2025-01-20",
+          "due_date": "2025-02-19",
+          "tax_rate": 8.5,
+          "discount": 100.00,
+          "notes": "Thank you for your business! Payment terms: Net 30",
+          "items": [
+            {
+              "description": "Web Development Services - January 2025",
+              "quantity": 40,
+              "unit_price": 150.00
+            },
+            {
+              "description": "Logo Design and Branding Package",
+              "quantity": 1,
+              "unit_price": 800.00
+            },
+            {
+              "description": "SEO Optimization Services",
+              "quantity": 10,
+              "unit_price": 100.00
+            }
+          ]
+        },
+        "response": {
+          "id": 3,
+          "invoice_number": "INV-20250120-0001"
+        }
+      },
+      
+      "GET_INVOICE": {
+        "method": "GET",
+        "url": "/api/invoices/{id}",
+        "example_url": "/api/invoices/1",
+        "response": {
+          "id": 1,
+          "invoice_number": "INV-20250115-0001",
+          "customer": {
+            "id": 1,
+            "name": "John Smith",
+            "email": "john.smith@example.com",
+            "phone": "+1-555-123-4567",
+            "address": "123 Main Street\nSuite 100\nNew York, NY 10001"
+          },
+          "issue_date": "2025-01-15",
+          "due_date": "2025-02-14",
+          "status": "pending",
+          "tax_rate": 8.5,
+          "discount": 50.00,
+          "notes": "Thank you for your continued business!",
+          "items": [
+            {
+              "id": 1,
+              "description": "Web Development Services - January 2025",
+              "quantity": 40,
+              "unit_price": 150.00,
+              "total": 6000.00
+            }
+          ],
+          "subtotal": 6000.00,
+          "tax_amount": 510.00,
+          "total": 6460.00
+        }
+      },
+      
+      "UPDATE_INVOICE": {
+        "method": "PUT",
+        "url": "/api/invoices/{id}",
+        "example_url": "/api/invoices/1",
+        "request": {
+          "customer_id": 2,
+          "status": "paid",
+          "issue_date": "2025-01-16",
+          "due_date": "2025-02-20",
+          "tax_rate": 9.0,
+          "discount": 75.00,
+          "notes": "Payment received on 2025-01-20. Thank you!",
+          "items": [
+            {
+              "description": "Updated Web Development Services - January 2025",
+              "quantity": 45,
+              "unit_price": 160.00
+            },
+            {
+              "description": "Additional SEO Services",
+              "quantity": 5,
+              "unit_price": 120.00
+            }
+          ]
+        },
+        "response": {
+          "message": "Invoice updated successfully"
+        },
+        "note": "All fields are optional. Only provided fields will be updated. If items array is provided, it will replace all existing items."
+      },
+      
+      "DELETE_INVOICE": {
+        "method": "DELETE",
+        "url": "/api/invoices/{id}",
+        "example_url": "/api/invoices/3",
+        "response": {
+          "message": "Invoice deleted successfully"
+        }
+      },
+      
+      "DOWNLOAD_PDF": {
+        "method": "GET",
+        "url": "/api/invoices/{id}/pdf",
+        "example_url": "/api/invoices/1/pdf",
+        "response": "Binary PDF file (application/pdf)"
+      },
+      
+      "EXPORT_CSV": {
+        "method": "GET",
+        "url": "/api/invoices/export/csv",
+        "description": "Export all invoices to CSV format",
+        "response": "CSV file download with filename format: invoices_export_YYYYMMDD_HHMMSS.csv",
+        "csv_columns": [
+          "Invoice Number",
+          "Customer Name", 
+          "Customer Email",
+          "Customer Phone",
+          "Issue Date",
+          "Due Date",
+          "Status",
+          "Items (formatted as text)",
+          "Subtotal",
+          "Tax Rate (%)",
+          "Tax Amount",
+          "Discount",
+          "Total",
+          "Notes",
+          "Created At"
+        ],
+        "example_row": "INV-20250608-0001,John Doe,john@example.com,+1-555-123-4567,2025-06-08,2025-07-08,pending,\"Service A (Qty: 2, Price: $100.00, Total: $200.00); Service B (Qty: 1, Price: $50.00, Total: $50.00)\",$250.00,5.00%,$12.50,$0.00,$262.50,Project notes,2025-06-08 10:30:00"
+      }
+    },
+    
+    "WEBHOOK": {
+      "CREATE_INVOICE_VIA_WEBHOOK_FULL": {
+        "method": "POST",
+        "url": "/api/webhook/invoice",
+        "description": "Create invoice with full details",
+        "request": {
+          "customer": {
+            "name": "New Customer via Webhook",
+            "email": "webhook.customer@example.com",
+            "phone": "+1-555-777-8888",
+            "address": "999 Webhook Lane\nAPI City, WB 12345"
+          },
+          "issue_date": "2025-01-20",
+          "due_date": "2025-02-19",
+          "tax_rate": 8.5,
+          "discount": 25.00,
+          "status": "pending",
+          "notes": "Invoice created via webhook integration",
+          "items": [
+            {
+              "description": "API Integration Services",
+              "quantity": 20,
+              "unit_price": 200.00
+            },
+            {
+              "description": "Webhook Setup and Configuration",
+              "quantity": 5,
+              "unit_price": 150.00
+            }
+          ]
+        },
+        "response": {
+          "success": true,
+          "invoice_id": 4,
+          "invoice_number": "INV-20250120-0002",
+          "customer_id": 4,
+          "customer_name": "New Customer via Webhook",
+          "total": 4445.75,
+          "pdf_url": "/api/invoices/4/pdf"
+        }
+      },
+      
+      "CREATE_INVOICE_VIA_WEBHOOK_MINIMAL": {
+        "method": "POST",
+        "url": "/api/webhook/invoice",
+        "description": "Create invoice with minimal input - smart defaults applied",
+        "request": {
+          "customer": {
+            "name": "Quick Client"
+          },
+          "items": [
+            {
+              "description": "Consulting Service",
+              "unit_price": 150.00
+            }
+          ]
+        },
+        "response": {
+          "success": true,
+          "invoice_id": 5,
+          "invoice_number": "INV-20250608-0005",
+          "customer_id": 8,
+          "customer_name": "Quick Client",
+          "total": 157.50,
+          "pdf_url": "/api/invoices/5/pdf"
+        },
+        "defaults_applied": {
+          "tax_rate": "5.0% (default)",
+          "quantity": "1.0 (default)",
+          "issue_date": "Today's date",
+          "due_date": "30 days from today",
+          "status": "pending",
+          "discount": "0.0",
+          "notes": "empty string",
+          "customer_fields": "email, phone, address default to empty"
+        }
+      },
+      
+      "CREATE_INVOICE_VIA_WEBHOOK_MEDIUM": {
+        "method": "POST",
+        "url": "/api/webhook/invoice",
+        "description": "Create invoice with some fields, others use defaults",
+        "request": {
+          "customer": {
+            "name": "Jane Doe",
+            "email": "jane@example.com"
+          },
+          "tax_rate": 7.5,
+          "notes": "Rush job",
+          "items": [
+            {
+              "description": "Logo Design",
+              "quantity": 2,
+              "unit_price": 250.00
+            },
+            {
+              "description": "Business Cards",
+              "unit_price": 75.00
+            }
+          ]
+        },
+        "response": {
+          "success": true,
+          "invoice_id": 6,
+          "invoice_number": "INV-20250608-0006",
+          "customer_id": 9,
+          "customer_name": "Jane Doe",
+          "total": 543.75,
+          "pdf_url": "/api/invoices/6/pdf"
+        }
+      }
+    },
+    
+    "COMPANY_SETTINGS": {
+      "GET_SETTINGS": {
+        "method": "GET",
+        "url": "/api/settings",
+        "response": {
+          "company_name": "FANGXIN PLUMBING LTD",
+          "address": "8900 DEMOREST DR.",
+          "city_postal": "RICHMOND, BC V7A4M1",
+          "phone": "(604) 388-9995",
+          "email": "PETERLJF@GMAIL.COM",
+          "gst_number": "759154495RT0001"
+        }
+      },
+      
+      "UPDATE_SETTINGS": {
+        "method": "PUT",
+        "url": "/api/settings",
+        "request": {
+          "company_name": "FANGXIN PLUMBING LTD",
+          "address": "8900 DEMOREST DR.",
+          "city_postal": "RICHMOND, BC V7A4M1",
+          "phone": "(604) 388-9995",
+          "email": "PETERLJF@GMAIL.COM",
+          "gst_number": "759154495RT0001"
+        },
+        "response": {
+          "message": "Settings updated successfully"
+        }
+      }
+    },
+    
+    "DASHBOARD": {
+      "GET_STATISTICS": {
+        "method": "GET",
+        "url": "/api/dashboard/stats",
+        "response": {
+          "total_revenue": 25430.50,
+          "pending_amount": 12500.00,
+          "total_invoices": 45,
+          "total_customers": 15,
+          "recent_invoices": [
+            {
+              "invoice_number": "INV-20250120-0001",
+              "customer_name": "John Smith",
+              "total": 6460.00,
+              "status": "pending"
+            },
+            {
+              "invoice_number": "INV-20250119-0001",
+              "customer_name": "Jane Doe",
+              "total": 1250.50,
+              "status": "paid"
+            }
+          ]
+        }
+      }
+    }
+  },
+  
+  "STATUS_VALUES": ["pending", "paid", "overdue", "cancelled"],
+  
+  "ERROR_RESPONSES": {
+    "404": {
+      "error": "Not found"
+    },
+    "400": {
+      "error": "Bad request - Invalid data provided"
+    },
+    "500": {
+      "error": "Internal server error"
+    }
+  }
+}

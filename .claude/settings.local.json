@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -c \"\nimport pandas as pd\n\nfile_path = '/Users/junfenglin/workspace/invoice/INVOICE.xlsx'\n\nprint('=== FINAL CLEAN ANALYSIS WITH PROPER COLUMN NAMES ===')\nprint()\n\n# Customers sheet - read with proper header row\ncustomers_df = pd.read_excel(file_path, sheet_name='Customers', skiprows=2)\ncustomers_df.columns = ['Empty', 'Lookup', 'Company_ID', 'Company_Name', 'Contact_Name', 'Address', 'City', 'State', 'ZIP_Code', 'Phone', 'Email', 'Fax']\ncustomers_clean = customers_df.dropna(subset=['Company_ID'])\nprint('CUSTOMERS DATA STRUCTURE:')\nprint('Total customers:', len(customers_clean))\nprint('Columns: Company_ID, Company_Name, Contact_Name, Address, City, State, ZIP_Code, Phone, Email, Fax')\nprint('Sample records:')\nfor i, row in customers_clean.head(5).iterrows():\n    print('  ID:', row['Company_ID'], ', Name:', row['Company_Name'], ', Address:', row['Address'])\nprint()\n\n# Invoices Main sheet  \ninvoices_df = pd.read_excel(file_path, sheet_name='Invoices - Main', skiprows=2)\ninvoices_df.columns = ['Empty', 'Invoice_Number', 'Company', 'Invoice_Date', 'Project_Description', 'Tax_Rate', 'Other', 'Deposit', 'Detail_Total', 'Invoice_Total', 'Notes']\ninvoices_clean = invoices_df.dropna(subset=['Invoice_Number'])\nprint('INVOICES MAIN DATA STRUCTURE:')\nprint('Total invoices:', len(invoices_clean))\nprint('Columns: Invoice_Number, Company, Invoice_Date, Project_Description, Tax_Rate, Other, Deposit, Detail_Total, Invoice_Total, Notes')\nprint('Sample records:')\nfor i, row in invoices_clean.head(5).iterrows():\n    print('  Invoice:', row['Invoice_Number'], ', Company:', row['Company'], ', Date:', row['Invoice_Date'], ', Total: $', row['Invoice_Total'])\nprint()\n\n# Invoice Details sheet\ndetails_df = pd.read_excel(file_path, sheet_name='Invoice Details', skiprows=2)\ndetails_df.columns = ['Empty', 'Description', 'Invoice_Number', 'Item_Number', 'Quantity', 'Unit_Price', 'Discount', 'Total']\ndetails_clean = details_df.dropna(subset=['Invoice_Number'])\nprint('INVOICE DETAILS DATA STRUCTURE:')\nprint('Total line items:', len(details_clean))\nprint('Columns: Description, Invoice_Number, Item_Number, Quantity, Unit_Price, Discount, Total')\nprint('Sample records:')\nfor i, row in details_clean.head(5).iterrows():\n    desc = str(row['Description'])[:50] + '...' if len(str(row['Description'])) > 50 else str(row['Description'])\n    print('  Invoice:', row['Invoice_Number'], ', Item:', row['Item_Number'], ', Description:', desc, ', Qty:', row['Quantity'], ', Price: $', row['Unit_Price'], ', Total: $', row['Total'])\nprint()\n\nprint('COMPANY INFO (from Invoice template sheet):')\nprint('Company: FANGXIN PLUMBING LTD')\nprint('Address: 8900 DEMOREST DR., V7A4M1')\nprint('Phone: (604) 388-9995')\nprint('Email: PETERLJF@GMAIL.COM')\nprint('GST#: 759154495RT0001')\n\")",
+      "Bash(chmod:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
+      "Bash(sqlite3:*)",
+      "Bash(cp:*)",
+      "Bash(python:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(pkill:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(git init:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": false
+}
